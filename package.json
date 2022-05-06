@@ -1,0 +1,16 @@
+{
+  "name": "role-bot",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "npx tsc",
+    "start": "yarn run build && node ./dist/index.js"
+  },
+  "devDependencies": {
+    "typescript": "^4.6.4"
+  },
+  "dependencies": {
+    "discord.js": "^13.6.0"
+  }
+}
