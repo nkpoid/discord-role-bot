@@ -4,11 +4,13 @@
   "main": "dist/index.js",
   "license": "MIT",
   "scripts": {
-    "build": "npx tsc",
-    "start": "yarn run build && node ./dist/index.js"
+    "ts": "node -r esbuild-register",
+    "build": "yarn ts build.ts",
+    "start": "yarn ts src/index.ts"
   },
   "devDependencies": {
-    "typescript": "^4.6.4"
+    "esbuild": "^0.14.38",
+    "esbuild-register": "^3.3.2"
   },
   "dependencies": {
     "discord.js": "^13.6.0"
