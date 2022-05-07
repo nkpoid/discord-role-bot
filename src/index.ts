@@ -1,5 +1,5 @@
 import { Client } from "discord.js";
-import { configMap } from "./config";
+import { configs } from "./config";
 
 const client = new Client({
   intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_MESSAGE_REACTIONS"],
@@ -7,14 +7,13 @@ const client = new Client({
 });
 
 client.once("ready", async () => {
-  for (const config of configMap) {
+  for (const config of configs) {
     const channel = client.channels.cache.get(config.message_channel_id);
     if (channel?.isText()) {
       const message = await channel.messages.fetch(config.message_id);
-      message.react(config.reaction_id);
-      console.log(
-        `reacted Emoji<${config.reaction_id}> for Message<${config.message_id}>`
-      );
+      for (const map of config.reaction_role_maps) {
+        message.react(map.reaction_id);
+      }
     }
   }
 
@@ -24,25 +23,37 @@ client.once("ready", async () => {
 client.on("messageReactionAdd", async ({ message, emoji }, user) => {
   if (user.bot) return;
 
-  for (const config of configMap) {
-    if (message.id === config.message_id && emoji.id === config.reaction_id) {
+  for (const config of configs) {
+    if (message.id === config.message_id) {
       const { guild } = message;
       const member = await guild?.members?.fetch(user.id);
 
-      await member?.roles.add(config.role_id);
-      console.log(`role added to ${member?.nickname}`);
+      for (const map of config.reaction_role_maps) {
+        if (emoji.id === map.reaction_id) {
+          for (const role_id of map.role_ids) {
+            await member?.roles.add(role_id);
+            console.log(`role added to ${member?.nickname}`);
+          }
+        }
+      }
     }
   }
 });
 
 client.on("messageReactionRemove", async ({ message, emoji }, user) => {
-  for (const config of configMap) {
-    if (message.id === config.message_id && emoji.id === config.reaction_id) {
+  for (const config of configs) {
+    if (message.id === config.message_id) {
       const { guild } = message;
       const member = await guild?.members?.fetch(user.id);
 
-      await member?.roles.remove(config.role_id);
-      console.log(`role removed from ${member?.nickname}`);
+      for (const map of config.reaction_role_maps) {
+        if (emoji.id === map.reaction_id) {
+          for (const role_id of map.role_ids) {
+            await member?.roles.remove(role_id);
+            console.log(`role removed from ${member?.nickname}`);
+          }
+        }
+      }
     }
   }
 });
