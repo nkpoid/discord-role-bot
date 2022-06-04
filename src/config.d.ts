@@ -3,7 +3,7 @@ type ReactionRoleMap = {
   role_ids: string[];
 };
 
-export type Config = {
+type Config = {
   message_channel_id: string;
   message_id: string;
   reaction_role_maps: ReactionRoleMap[];

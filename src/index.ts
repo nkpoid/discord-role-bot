@@ -1,5 +1,5 @@
 import { Client } from "discord.js";
-import { configs } from "./config";
+import ConfigMap from "./config";
 
 const client = new Client({
   intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_MESSAGE_REACTIONS"],
@@ -7,7 +7,7 @@ const client = new Client({
 });
 
 client.once("ready", async () => {
-  for (const config of configs) {
+  for (const config of ConfigMap) {
     const channel = client.channels.cache.get(config.message_channel_id);
     if (channel?.isText()) {
       const message = await channel.messages.fetch(config.message_id);
@@ -23,7 +23,7 @@ client.once("ready", async () => {
 client.on("messageReactionAdd", async ({ message, emoji }, user) => {
   if (user.bot) return;
 
-  for (const config of configs) {
+  for (const config of ConfigMap) {
     if (message.id === config.message_id) {
       const { guild } = message;
       const member = await guild?.members?.fetch(user.id);
@@ -41,7 +41,9 @@ client.on("messageReactionAdd", async ({ message, emoji }, user) => {
 });
 
 client.on("messageReactionRemove", async ({ message, emoji }, user) => {
-  for (const config of configs) {
+  if (user.bot) return;
+
+  for (const config of ConfigMap) {
     if (message.id === config.message_id) {
       const { guild } = message;
       const member = await guild?.members?.fetch(user.id);
