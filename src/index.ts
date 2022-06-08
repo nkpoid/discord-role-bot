@@ -12,7 +12,7 @@ client.once("ready", async () => {
     if (channel?.isText()) {
       const message = await channel.messages.fetch(config.message_id);
       for (const map of config.reaction_role_maps) {
-        message.react(map.reaction_id);
+        message.react(map.reaction);
       }
     }
   }
@@ -29,7 +29,7 @@ client.on("messageReactionAdd", async ({ message, emoji }, user) => {
       const member = await guild?.members?.fetch(user.id);
 
       for (const map of config.reaction_role_maps) {
-        if (emoji.id === map.reaction_id) {
+        if (emoji.name === map.reaction || emoji.id === map.reaction) {
           for (const role_id of map.role_ids) {
             await member?.roles.add(role_id);
             console.log(`role added to ${member?.nickname}`);
@@ -49,7 +49,7 @@ client.on("messageReactionRemove", async ({ message, emoji }, user) => {
       const member = await guild?.members?.fetch(user.id);
 
       for (const map of config.reaction_role_maps) {
-        if (emoji.id === map.reaction_id) {
+        if (emoji.name === map.reaction || emoji.id === map.reaction) {
           for (const role_id of map.role_ids) {
             await member?.roles.remove(role_id);
             console.log(`role removed from ${member?.nickname}`);

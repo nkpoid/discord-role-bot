@@ -1,5 +1,5 @@
 type ReactionRoleMap = {
-  reaction_id: string;
+  reaction: string;
   role_ids: string[];
 };
 
